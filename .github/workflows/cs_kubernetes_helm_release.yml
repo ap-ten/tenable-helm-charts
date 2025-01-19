@@ -5,7 +5,7 @@ on:
     branches:
       - test_releases
     paths:
-      - charts/cloud-security/
+      - 'charts/cloud-security/**'
 
 jobs:
   release:
