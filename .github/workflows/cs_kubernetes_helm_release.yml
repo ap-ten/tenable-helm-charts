@@ -33,7 +33,7 @@ jobs:
       - name: Copy Existing releases
         run: |
           mkdir -p .cr-release-packages
-          cp releases/*.tgz .re-release-packages/
+          cp releases/*.tgz .cr-release-packages/
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
