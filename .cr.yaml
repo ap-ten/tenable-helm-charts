@@ -1,2 +1,0 @@
-skip-existing: true
-release-name-template: "{{ .Name }}--{{ .Version }}"

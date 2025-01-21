@@ -36,7 +36,8 @@ jobs:
           cp releases/*.tgz .cr-release-packages/
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
+        uses: helm/chart-releaser-action@v1.7.0
+        id: chart_releaser
         with:
           config: .cr.yaml
           charts_dir: charts/cloud-security
@@ -46,4 +47,23 @@ jobs:
           CR_PACKAGE_PATH: ".cr-release-packages"
           CR_SKIP_EXITING: "true"
           CR_PACKAGES_WITH_INDEX: "true"
-          CR_RELEASE_NAME_TEMPLATE: "{{ .Name }}--{{ .Version }}"
+      - name: Debug Outputs
+        run: |
+          echo "Released Charts: ${{ steps.chart_releaser.outputs.released_charts }}"
+
+      - name: Copy Released charts to releases folder
+        run: |
+          cp -n .cr-release-packages/*.tgz releases/
+
+      # Process released charts
+      - name: Process Released Charts
+        run: |
+          echo "Processing released charts..."
+          for chart in ${{ steps.chart_releaser.outputs.released_charts }}; do
+            echo "Indexing chart: $chart"
+            helm repo index --merge index.yaml .cr-release-packages/$chart
+          done
+          cp -f index.yaml new_index.yaml
+          git add new_index.yaml
+          git commit -m "update new_index.yaml"
+          git push
