@@ -46,4 +46,4 @@ jobs:
           CR_PACKAGE_PATH: ".cr-release-packages"
           CR_SKIP_EXITING: "true"
           CR_PACKAGES_WITH_INDEX: "true"
-          CR_RELEASE_NAME_TEMPLATE: "release/{{ .Name }}-{{ .Version }}"
+          CR_RELEASE_NAME_TEMPLATE: "release/{{ .Name }}--{{ .Version }}"
