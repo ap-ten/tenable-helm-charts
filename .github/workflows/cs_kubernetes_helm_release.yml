@@ -49,7 +49,7 @@ jobs:
           CR_PACKAGES_WITH_INDEX: "true"
       - name: Debug Outputs
         run: |
-          echo "Released Charts: ${{ steps.chart_releaser.outputs.released_charts }}"
+          echo "Released Charts: ${{ steps.chart_releaser.outputs.changed_charts }}"
 
       - name: Copy Released charts to releases folder
         run: |
