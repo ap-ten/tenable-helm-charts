@@ -44,33 +44,26 @@ jobs:
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_INDEX_PATH: ".cr-index/index.yaml"
-          CR_PACKAGE_PATH: ".cr-release-packages"
+          CR_PACKAGE_PATH: "releases"
           CR_SKIP_EXITING: "true"
           CR_PACKAGES_WITH_INDEX: "true"
+
       - name: Debug Outputs
         run: |
           echo "Released Charts: ${{ steps.chart_releaser.outputs.changed_charts }}"
 
-      - name: Copy Released charts to releases folder
-        run: |
-          cp --update=none .cr-release-packages/*.tgz releases/
-
       # Process released charts
       - name: Process Released Charts
+        env:
+          CHANGED_CHARTS: ${{ steps.chart_releaser.outputs.changed_charts }}
         run: |
           echo "Processing released charts..."
-          for chart in ${{ steps.chart_releaser.outputs.changed_charts }}; do
-            echo "changed chart: $chart"
-            # Extract chart name and version from the Chart.yaml
-            chart_name=$(yq '.name' $chart/Chart.yaml)
-            chart_version=$(yq '.version' $chart/Chart.yaml)
-            
-            # Determine the expected package file
-            package_file="${chart_name}-${chart_version}.tgz"
-            git add releases/$package_file
-          done
-          helm repo index --merge index.yaml .
-          cp -f index.yaml new_index.yaml
-          git add new_index.yaml
-          git commit -m "update new_index.yaml"
-          git push
+          if [ \"$CHANGED_CHARTS\" != \"\" ]; then
+            git add releases/*
+            helm repo index --merge index.yaml .
+            cp -f index.yaml new_index.yaml
+            git add new_index.yaml
+            git commit -m "update new_index.yaml"
+            git push
+          endif
+          
