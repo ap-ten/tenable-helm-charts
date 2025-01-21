@@ -53,7 +53,7 @@ jobs:
 
       - name: Copy Released charts to releases folder
         run: |
-          cp -n .cr-release-packages/*.tgz releases/
+          cp --update=none .cr-release-packages/*.tgz releases/
 
       # Process released charts
       - name: Process Released Charts
@@ -62,8 +62,8 @@ jobs:
           for chart in ${{ steps.chart_releaser.outputs.released_charts }}; do
             echo "changed chart: $chart"
             # Extract chart name and version from the Chart.yaml
-            chart_name=$(yq '.name' $chart_path/Chart.yaml)
-            chart_version=$(yq '.version' $chart_path/Chart.yaml)
+            chart_name=$(yq '.name' $chart/Chart.yaml)
+            chart_version=$(yq '.version' $chart/Chart.yaml)
             
             # Determine the expected package file
             package_file=".cr-release-packages/${chart_name}-${chart_version}.tgz"
