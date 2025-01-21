@@ -45,3 +45,4 @@ jobs:
           CR_INDEX_PATH: ".cr-index/index.yaml"
           CR_PACKAGE_PATH: ".cr-release-packages"
           CR_SKIP_EXITING: "true"
+          CR_GIT_BASE_URL: ""
