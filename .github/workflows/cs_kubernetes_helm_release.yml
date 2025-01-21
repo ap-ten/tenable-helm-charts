@@ -60,5 +60,5 @@ jobs:
             git add new_index.yaml
             git commit -m "update new_index.yaml"
             git push
-          endif
+          fi
           
