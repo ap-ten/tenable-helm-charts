@@ -59,7 +59,7 @@ jobs:
       - name: Process Released Charts
         run: |
           echo "Processing released charts..."
-          for chart in ${{ steps.chart_releaser.outputs.released_charts }}; do
+          for chart in ${{ steps.chart_releaser.outputs.changed_charts }}; do
             echo "changed chart: $chart"
             # Extract chart name and version from the Chart.yaml
             chart_name=$(yq '.name' $chart/Chart.yaml)
