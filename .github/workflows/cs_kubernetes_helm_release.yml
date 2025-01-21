@@ -67,10 +67,9 @@ jobs:
             
             # Determine the expected package file
             package_file="${chart_name}-${chart_version}.tgz"
-            echo "indexing chart: $package_file"
-            helm repo index --merge index.yaml releases/$package_file
             git add releases/$package_file
           done
+          helm repo index --merge index.yaml .
           cp -f index.yaml new_index.yaml
           git add new_index.yaml
           git commit -m "update new_index.yaml"
