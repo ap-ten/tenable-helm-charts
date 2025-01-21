@@ -24,6 +24,16 @@ entries:
   cloud-security-kubernetes-cluster:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-01-21T08:20:58.207561505Z"
+    description: Tenable Cloud Security Kubernetes cluster
+    digest: 52d216655fbd7e1a604bd0f55642d90178c3b873fce77b196839b3786cabab25
+    name: cloud-security-kubernetes-cluster
+    type: application
+    urls:
+    - cloud-security-kubernetes-cluster-2.0.8.tgz
+    version: 2.0.8
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2025-01-21T08:01:30.251223297Z"
     description: Tenable Cloud Security Kubernetes cluster
     digest: e3b3e2aaf429f3ac29095569b470edee28cd15ecc7ff6bf4a1893f83a5b17d0a
@@ -281,4 +291,4 @@ entries:
     urls:
     - releases/tes-operator-1.0.0.tgz
     version: 1.0.0
-generated: "2025-01-21T08:01:30.251286946Z"
+generated: "2025-01-21T08:20:58.207656252Z"
