@@ -39,8 +39,8 @@ jobs:
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_INDEX_PATH: ".cr-index/index.yaml"
-          CR_PACKAGE_PATH: "releases"
-          CR_SKIP_EXITING: "true"
+          CR_PACKAGE_PATH: "./releases"
+          CR_SKIP_EXISTING: "true"
           CR_PACKAGES_WITH_INDEX: "true"
 
       - name: Debug Outputs
