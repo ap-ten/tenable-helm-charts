@@ -61,4 +61,32 @@ jobs:
             git commit -m "update new_index.yaml"
             git push
           fi
+      - name: Install GitGuardian CLI
+        if: steps.chart_releaser.outputs.changed_charts != ''
+        run: |
+          pip install ggshield
+
+      - name: Extract and scan chart packages with GitGuardian
+        if: steps.chart_releaser.outputs.changed_charts != ''
+        run: |
+          # Create directory for extracted charts
+          mkdir -p ./extracted_charts
+
+          # Find and extract all tgz files
+          find ./releases -name "*.tgz" -exec tar -xzf {} -C ./extracted_charts \;
+
+          # List extracted content for debugging
+          ls -la ./extracted_charts
+
+          # Scan the extracted content
+          GITGUARDIAN_API_KEY=${{ secrets.GITGUARDIAN_API_KEY }} \
+          ggshield secret scan path ./extracted_charts --recursive > scan_results.txt || true
+
+          # Check if any secrets were found
+          if grep -q "Incident" scan_results.txt; then
+            echo "::error::GitGuardian found secrets in the chart packages. Aborting push."
+            cat scan_results.txt
+            exit 1
+          fi
+          echo "No secrets detected in chart packages. Proceeding with push."
           
