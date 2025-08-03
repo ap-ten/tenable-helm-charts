@@ -29,19 +29,57 @@ jobs:
         uses: azure/setup-helm@v4
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Install Chart Releaser
+        run: |
+          CR_VERSION="v1.8.1"
+          curl -sSLo cr.tar.gz "https://github.com/helm/chart-releaser/releases/download/${CR_VERSION}/chart-releaser_${CR_VERSION}_linux_amd64.tar.gz"
+          tar -xzf cr.tar.gz
+          chmod +x cr
+          sudo mv cr /usr/local/bin/
+      - name: Create Work Directories
+        run: |
+          mkdir -p .cr-index
+          mkdir -p .chart-scan-tmp
 
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.7.0
+      - name: Package Charts
         id: chart_releaser
-        with:
-          config: .cr.yaml
-          charts_dir: charts/cloud-security
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_INDEX_PATH: ".cr-index/index.yaml"
-          CR_PACKAGE_PATH: "./releases"
-          CR_SKIP_EXISTING: "true"
-          CR_PACKAGES_WITH_INDEX: "true"
+        run: |
+          # Find all charts that have changed
+          CHANGED_CHARTS=()
+          for chart in charts/cloud-security/*; do
+            if [ -d "$chart" ]; then
+              # Check if chart files have changed
+              if git diff --name-only HEAD^ HEAD | grep -q "^$chart/"; then
+                CHART_NAME=$(basename "$chart")
+                CHANGED_CHARTS+=("$CHART_NAME")
+                
+                # Package the chart
+                helm package "$chart" -d releases/
+              fi
+            fi
+          done
+          
+          # Set output with changed charts
+          if [ ${#CHANGED_CHARTS[@]} -gt 0 ]; then
+            echo "changed_charts=${CHANGED_CHARTS[*]}" >> $GITHUB_OUTPUT
+            echo "Charts changed: ${CHANGED_CHARTS[*]}"
+          else
+            echo "No charts changed"
+          fi
+
+          
+      # - name: Run chart-releaser
+      #   uses: helm/chart-releaser-action@v1.7.0
+      #   id: chart_releaser
+      #   with:
+      #     config: .cr.yaml
+      #     charts_dir: charts/cloud-security
+      #   env:
+      #     CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      #     CR_INDEX_PATH: ".cr-index/index.yaml"
+      #     CR_PACKAGE_PATH: "./releases"
+      #     CR_SKIP_EXISTING: "true"
+      #     CR_PACKAGES_WITH_INDEX: "true"
 
       - name: Debug Outputs
         run: |
@@ -80,7 +118,7 @@ jobs:
 
           # Scan the extracted content
           GITGUARDIAN_API_KEY=${{ secrets.GITGUARDIAN_API_KEY }} \
-          ggshield secret scan path ./extracted_charts --recursive > scan_results.txt || true
+          ggshield secret scan path -y ./extracted_charts --recursive > scan_results.txt || true
 
           # Check if any secrets were found
           if grep -q "Incident" scan_results.txt; then
