@@ -31,8 +31,8 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: Install Chart Releaser
         run: |
-          CR_VERSION="v1.8.1"
-          curl -sSLo cr.tar.gz "https://github.com/helm/chart-releaser/releases/download/${CR_VERSION}/chart-releaser_${CR_VERSION}_linux_amd64.tar.gz"
+          CR_VERSION="1.8.1"
+          curl -sSLo cr.tar.gz "https://github.com/helm/chart-releaser/releases/download/v${CR_VERSION}/chart-releaser_${CR_VERSION}_linux_amd64.tar.gz"
           tar -xzf cr.tar.gz
           chmod +x cr
           sudo mv cr /usr/local/bin/
