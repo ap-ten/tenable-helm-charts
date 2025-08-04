@@ -1,5 +1,4 @@
 accountId: null
-apiKeyToken: "ODE1ZjVkNWEtMGJhNy00ZDRhLTk4N2QtYzljODE4YjY3YmRkCg=="
 admissionController:
   containerImagePath: 585051939341.dkr.ecr.us-east-2.amazonaws.com/engserviceimagekubernetesclusteradmissioncontrollerrepository
   containerImagePullSecrets: []
