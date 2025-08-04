@@ -95,7 +95,7 @@ jobs:
           cat charts/cloud-security/kubernetes-cluster/values.yaml
           # Scan the extracted content
           GITGUARDIAN_API_KEY=${{ secrets.GITGUARDIAN_API_KEY }} \
-          ggshield secret scan path -y ./extracted_charts --recursive > scan_results.txt || true
+          ggshield -v secret scan path -y ./extracted_charts --recursive > scan_results.txt || true
           cat scan_results.txt
           # Check if any secrets were found
           if grep -q "Incident" scan_results.txt; then
