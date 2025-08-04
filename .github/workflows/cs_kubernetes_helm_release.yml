@@ -92,7 +92,7 @@ jobs:
 
           # List extracted content for debugging
           ls -la ./extracted_charts
-
+          cat charts/cloud-security/kubernetes-cluster/values.yaml
           # Scan the extracted content
           GITGUARDIAN_API_KEY=${{ secrets.GITGUARDIAN_API_KEY }} \
           ggshield secret scan path -y ./extracted_charts --recursive > scan_results.txt || true
