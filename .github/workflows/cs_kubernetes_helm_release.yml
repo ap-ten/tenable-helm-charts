@@ -11,6 +11,7 @@ jobs:
   release:
     permissions:
       contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -158,5 +159,5 @@ jobs:
             --title "CS | ${{ steps.chart_releaser.outputs.changed_charts }} | " \
             --body "" \
             --base "${{ github.ref_name }}" \
-            --head "${{ env.PR_BRANCH }}"
+            --head "${{ env.PR_BRANCH }}" \
             --delete-branch
