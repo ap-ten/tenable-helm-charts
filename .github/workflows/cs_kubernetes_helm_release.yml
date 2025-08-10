@@ -135,14 +135,6 @@ jobs:
         if: steps.chart_releaser.outputs.changed_charts != '' && success()
         run: |
           # Only runs if GitGuardian check passed (or was skipped)
-          git commit -m "Release charts: ${{ steps.chart_releaser.outputs.changed_charts }}"
-          git push origin ${{ env.PR_BRANCH }}
-    
-      - name: Create Pull Request
-        if: steps.chart_releaser.outputs.changed_charts != '' && success()
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
           PR_TITLE="CS "
           for chart_dir in ${{ steps.chart_releaser.outputs.changed_charts }}; do
             chart_path="charts/cloud-security/${chart_dir}"
@@ -150,9 +142,17 @@ jobs:
             formatted_chart_name=$(echo "${chart_dir}" | sed 's/-/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2)); print}')
             PR_TITLE="$PR_TITLE | ${formatted_chart_name} Helm ${chart_version}"
           done
+          git commit -m "${PR_TITLE}"
+          git push origin ${{ env.PR_BRANCH }}
+          echo PR_TITLE=${PR_TITLE} >> $GITHUB_ENV
+      - name: Create Pull Request
+        if: steps.chart_releaser.outputs.changed_charts != '' && success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
           # Create PR using GitHub CLI
           PR_URL=$(gh pr create \
-            --title "${PR_TITLE}" \
+            --title "${{env.PR_TITLE}}" \
             --body "" \
             --base "${{ github.ref_name }}" \
             --head "${{ env.PR_BRANCH }}")
