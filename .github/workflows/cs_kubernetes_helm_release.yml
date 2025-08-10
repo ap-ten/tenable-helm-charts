@@ -155,9 +155,12 @@ jobs:
             PR_TITLE="$PR_TITLE | $chart_dir v$chart_version"
           done
           # Create PR using GitHub CLI
-          gh pr create \
+          PR_URL=$(gh pr create \
             --title "CS | ${{ steps.chart_releaser.outputs.changed_charts }} | " \
             --body "" \
             --base "${{ github.ref_name }}" \
-            --head "${{ env.PR_BRANCH }}" \
-            --delete-branch
+            --head "${{ env.PR_BRANCH }}")
+          PR_NUMBER=$(echo $PR_URL | awk -F'/' '{print $NF}')
+          gh api repos/${{ github.repository }}/pulls/$PR_NUMBER \
+                -X PATCH \
+                -f delete_branch_on_merge=true
