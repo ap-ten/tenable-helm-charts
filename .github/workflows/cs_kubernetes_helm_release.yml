@@ -147,8 +147,8 @@ jobs:
           for chart_dir in ${{ steps.chart_releaser.outputs.changed_charts }}; do
             chart_path="charts/cloud-security/${chart_dir}"
             chart_version=$(grep '^version:' "$chart_path/Chart.yaml" | awk '{print $2}' | tr -d '"')
-            # Add to PR title
-            PR_TITLE="$PR_TITLE | ${chart_dir} Helm ${chart_version}"
+            formatted_chart_name=$(echo "${chart_dir}" | sed 's/-/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2)); print}')
+            PR_TITLE="$PR_TITLE | ${formatted_chart_name} Helm ${chart_version}"
           done
           # Create PR using GitHub CLI
           PR_URL=$(gh pr create \
