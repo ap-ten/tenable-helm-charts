@@ -78,13 +78,21 @@ jobs:
             cp -f index.yaml new_index.yaml
             git add new_index.yaml
           fi
+      - name: Check for GitGuardian API key
+        id: check_gitguardian_key
+        run: |
+          if [[ "${{ secrets.GITGUARDIAN_API_KEY }}" != "" ]]; then
+            echo "GITGUARDIAN_KEY=true" >> $GITHUB_ENV
+          else
+            echo "GITGUARDIAN_KEY=false" >> $GITHUB_ENV
+          fi
       - name: Install GitGuardian CLI
-        if: steps.chart_releaser.outputs.changed_charts != '' && secrets.GITGUARDIAN_API_KEY != ''
+        if: steps.chart_releaser.outputs.changed_charts != '' && env.GITGUARDIAN_KEY == 'true'
         run: |
           pip install ggshield
 
       - name: Extract and scan chart packages with GitGuardian
-        if: steps.chart_releaser.outputs.changed_charts != '' && secrets.GITGUARDIAN_API_KEY != ''
+        if: steps.chart_releaser.outputs.changed_charts != '' && env.GITGUARDIAN_KEY == 'true'
         run: |
           # Create directory for extracted charts
           mkdir -p ./extracted_charts
