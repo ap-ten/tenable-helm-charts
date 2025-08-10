@@ -145,15 +145,14 @@ jobs:
         run: |
           PR_TITLE="CS "
           for chart_dir in ${{ steps.chart_releaser.outputs.changed_charts }}; do
-            chart_path="charts/cloud-security/$chart_dir"
-            chart_name="$chart_dir"
+            chart_path="charts/cloud-security/${chart_dir}"
             chart_version=$(grep '^version:' "$chart_path/Chart.yaml" | awk '{print $2}' | tr -d '"')
             # Add to PR title
-            PR_TITLE="$PR_TITLE | ${{chart_dir}} Helm ${{chart_version}}"
+            PR_TITLE="$PR_TITLE | ${chart_dir} Helm ${chart_version}"
           done
           # Create PR using GitHub CLI
           PR_URL=$(gh pr create \
-            --title "CS | ${{ steps.chart_releaser.outputs.changed_charts }} | " \
+            --title "${PR_TITLE}" \
             --body "" \
             --base "${{ github.ref_name }}" \
             --head "${{ env.PR_BRANCH }}")
