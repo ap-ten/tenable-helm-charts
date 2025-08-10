@@ -1,5 +1,4 @@
 accountId: null
-apiKeyToken: "ODE1ZjVkNWEtMGJhNy00ZDRhLTk4N2QtYzljODE4YjY3YmRkCg=="
 admissionController:
   containerImagePath: 585051939341.dkr.ecr.us-east-2.amazonaws.com/engserviceimagekubernetesclusteradmissioncontrollerrepository
   containerImagePullSecrets: []
@@ -27,7 +26,7 @@ connector:
   network: true
 containerImagePath: tenable/cloud-security-kubernetes-cluster-manager
 containerImagePullSecrets: []
-name: "dddd"
+name: null
 pod:
   affinity: {}
   annotations: {}
