@@ -27,7 +27,7 @@ connector:
   network: true
 containerImagePath: tenable/cloud-security-kubernetes-cluster-manager
 containerImagePullSecrets: []
-name: null
+name: "dddd"
 pod:
   affinity: {}
   annotations: {}
